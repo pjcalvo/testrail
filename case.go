@@ -87,7 +87,22 @@ func (c *Client) GetCase(caseID int) (Case, error) {
 // GetCases returns a list of Test Cases on project projectID
 // for a Test Suite suiteID
 // or for specific section sectionID in a Test Suite
-func (c *Client) GetCases(projectID, suiteID int, sectionID ...int) ([]Case, error) {
+func (c *Client) GetCases(projectID int) ([]Case, error) {
+	uri := fmt.Sprintf("get_cases/%d", projectID)
+	returnCases := Cases{}
+	var err error
+	if c.useBetaApi {
+		err = c.sendRequestBeta("GET", uri, nil, &returnCases, "cases")
+	} else {
+		err = c.sendRequest("GET", uri, nil, &returnCases)
+	}
+	return returnCases.Cases, err
+}
+
+// GetCasesForSuite returns a list of Test Cases on project projectID
+// for a Test Suite suiteID
+// or for specific section sectionID in a Test Suite
+func (c *Client) GetCasesForSuite(projectID, suiteID int, sectionID ...int) ([]Case, error) {
 	uri := fmt.Sprintf("get_cases/%d&suite_id=%d", projectID, suiteID)
 	if len(sectionID) > 0 {
 		uri = fmt.Sprintf("%s&section_id=%d", uri, sectionID[0])
