@@ -24,6 +24,7 @@ type Case struct {
 	UpdatedOn            int          `json:"updated_on"`
 	State                int          `json:"custom_state,omitempty"`
 	CustomTestRunConfig  []int        `json:"custom_testrun_configs,omitempty"`
+	CustomSpecHash       string       `json:"custom_spec_hash,omitempty"`
 }
 
 type Cases struct {
@@ -75,6 +76,7 @@ type SendableCase struct {
 	URL                 string       `json:"custom_url,omitempty"`
 	User                int          `json:"custom_user,omitempty"`
 	CustomTestRunConfig []int        `json:"custom_testrun_configs,omitempty"`
+	CustomSpecHash      string       `json:"custom_spec_hash,omitempty"`
 }
 
 // GetCase returns the existing Test Case caseID

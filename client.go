@@ -108,7 +108,7 @@ func (c *Client) sendRequest(method, uri string, data, v interface{}) error {
 		if err != nil {
 			return fmt.Errorf("unmarshaling response: %s", err)
 		}
-		
+
 	}
 
 	return nil
