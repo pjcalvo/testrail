@@ -99,7 +99,7 @@ func (c *Client) GetCases(projectID int) ([]Case, error) {
 	} else {
 		for {
 			paginated := Cases{}
-			err = c.sendRequest("GET", uri, nil, &returnCases)
+			err = c.sendRequest("GET", uri, nil, &paginated)
 			if err != nil {
 				return paginated.Cases, err
 			}
@@ -108,7 +108,7 @@ func (c *Client) GetCases(projectID int) ([]Case, error) {
 			if paginated.Links.Next == "" {
 				return paginated.Cases, err
 			}
-			uri = paginated.Links.Next
+			uri, _ = strings.CutPrefix(paginated.Links.Next, "/api/v2/")
 		}
 	}
 	return returnCases.Cases, err
