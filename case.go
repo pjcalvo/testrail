@@ -1,6 +1,9 @@
 package testrail
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // Case represents a Test Case
 type Case struct {
