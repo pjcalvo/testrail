@@ -109,7 +109,7 @@ func (c *Client) GetCases(projectID int) ([]Case, error) {
 
 			returnCases.Cases = append(returnCases.Cases, paginated.Cases...)
 			if paginated.Links.Next == "" {
-				return paginated.Cases, err
+				return returnCases.Cases, err
 			}
 			uri, _ = strings.CutPrefix(paginated.Links.Next, "/api/v2/")
 		}
