@@ -28,6 +28,7 @@ type Case struct {
 }
 
 type Cases struct {
+	PaginatedResults
 	Cases []Case `json:"cases"`
 }
 
@@ -96,7 +97,19 @@ func (c *Client) GetCases(projectID int) ([]Case, error) {
 	if c.useBetaApi {
 		err = c.sendRequestBeta("GET", uri, nil, &returnCases, "cases")
 	} else {
-		err = c.sendRequest("GET", uri, nil, &returnCases)
+		for {
+			paginated := Cases{}
+			err = c.sendRequest("GET", uri, nil, &returnCases)
+			if err != nil {
+				return paginated.Cases, err
+			}
+
+			returnCases.Cases = append(returnCases.Cases, paginated.Cases...)
+			if paginated.Links.Next == "" {
+				return paginated.Cases, err
+			}
+			uri = paginated.Links.Next
+		}
 	}
 	return returnCases.Cases, err
 }
