@@ -1,7 +1,14 @@
 package testrail
 
-import "strconv"
+import (
+	"strconv"
+	"strings"
+)
 
+type Runs struct {
+	PaginatedResults
+	Runs []Run `json:"runs"`
+}
 // Run represents a Run
 type Run struct {
 	AssignedToID       int    `json:"assignedto_id"`
@@ -87,20 +94,33 @@ func (c *Client) GetRun(runID int) (Run, error) {
 // validating the filters
 func (c *Client) GetRuns(projectID int, filters ...RequestFilterForRun) ([]Run, error) {
 	uri := "get_runs/" + strconv.Itoa(projectID)
+	returnRuns := Runs{}
 	if len(filters) > 0 {
 		uri = applyFiltersForRuns(uri, filters[0])
 	}
 
-	returnRun := struct {
-		Runs []Run `json:"runs"`
-	}{}
 	var err error
 	if c.useBetaApi {
-		err = c.sendRequestBeta("GET", uri, nil, &returnRun, "runs")
+		err = c.sendRequestBeta("GET", uri, nil, &returnRuns, "runs")
 	} else {
-		err = c.sendRequest("GET", uri, nil, &returnRun)
+		for {
+			paginated := Runs{}
+			err = c.sendRequest("GET", uri, nil, &paginated)
+			if err != nil {
+				return returnRuns.Runs, err
+			}
+
+			returnRuns.Runs = append(returnRuns.Runs, paginated.Runs...)
+			if paginated.Links.Next == "" || strings.Contains(paginated.Links.Next, "limit=0") {
+				return returnRuns.Runs, nil
+			}
+			uri, _ = strings.CutPrefix(paginated.Links.Next, "/api/v2/")
+			if len(filters) > 0 {
+				uri = applyFiltersForRuns(uri, filters[0])
+			}
+		}
 	}
-	return returnRun.Runs, err
+	return returnRuns.Runs, err
 }
 
 // AddRun creates a new run on projectID and returns it
