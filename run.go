@@ -19,6 +19,7 @@ type Run struct {
 	IncludeAll         bool   `json:"include_all"`
 	IsCompleted        bool   `json:"is_completed"`
 	MilestoneID        int    `json:"milestone_id"`
+	Refs			   string `json:"refs"`
 	Name               string `json:"name"`
 	PassedCount        int    `json:"passed_count"`
 	PlanID             int    `json:"plan_id"`
@@ -44,6 +45,7 @@ type RequestFilterForRun struct {
 	CreatedBefore string `json:"created_before,omitempty"`
 	CreatedBy     []int  `json:"created_by,omitempty"`
 	IsCompleted   *bool  `json:"is_completed,omitempty"`
+	Refs		  string `json:"refs,omitempty"`
 	Limit         *int   `json:"limit,omitempty"`
 	Offset        *int   `json:"offset, omitempty"`
 	MilestoneID   []int  `json:"milestone_id,omitempty"`
@@ -59,6 +61,7 @@ type SendableRun struct {
 	MilestoneID  int    `json:"milestone_id,omitempty"`
 	AssignedToID int    `json:"assignedto_id,omitempty"`
 	IncludeAll   *bool  `json:"include_all,omitempty"`
+	Refs         string `json:"refs,omitempty"`
 	CaseIDs      []int  `json:"case_ids,omitempty"`
 	ConfigIDs    []int  `json:"config_ids,omitempty"`
 }
